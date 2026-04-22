@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace QuanLySinhVien.Controllers
@@ -101,12 +102,29 @@ namespace QuanLySinhVien.Controllers
         {
             SetData();
 
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(model.MaSinhVien) ||
+        string.IsNullOrWhiteSpace(model.TenSinhVien) ||
+        string.IsNullOrWhiteSpace(model.MatKhau))
             {
+                ViewBag.Error = "Vui lòng nhập đầy đủ thông tin!";
                 ViewBag.DanhSachSinhVien = GetDanhSachSinhVien();
                 return View(model);
             }
 
+            if (!ModelState.IsValid)
+            {
+                var loiDauTien = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
+                ViewBag.Error = string.IsNullOrEmpty(loiDauTien)
+                    ? "Dữ liệu không hợp lệ!"
+                    : loiDauTien;
+
+                ViewBag.DanhSachSinhVien = GetDanhSachSinhVien();
+                return View(model);
+            }
             using (SqlConnection conn = DbHelper.GetConnection())
             {
                 conn.Open();
@@ -131,9 +149,27 @@ namespace QuanLySinhVien.Controllers
                     ViewBag.DanhSachSinhVien = GetDanhSachSinhVien();
                     return View(new SinhVienModel());
                 }
-                catch (Exception ex)
+                catch (SqlException ex)
                 {
-                    ViewBag.Error = "Lỗi: " + ex.Message;
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        ViewBag.Error = "Mã sinh viên đã tồn tại!";
+                    }
+                    else if (ex.Number == 245 || ex.Number == 8114)
+                    {
+                        ViewBag.Error = "Dữ liệu không hợp lệ!";
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Thêm sinh viên thất bại, vui lòng kiểm tra lại dữ liệu!";
+                    }
+
+                    ViewBag.DanhSachSinhVien = GetDanhSachSinhVien();
+                    return View(model);
+                }
+                catch (Exception)
+                {
+                    ViewBag.Error = "Đã xảy ra lỗi, vui lòng thử lại!";
                     ViewBag.DanhSachSinhVien = GetDanhSachSinhVien();
                     return View(model);
                 }
@@ -175,8 +211,55 @@ namespace QuanLySinhVien.Controllers
         {
             SetData();
 
+            if (string.IsNullOrWhiteSpace(model.MaLopHocPhan) ||
+        string.IsNullOrWhiteSpace(model.MaMonHoc) ||
+        string.IsNullOrWhiteSpace(model.MaGiangVien) ||
+        string.IsNullOrWhiteSpace(model.HocKy))
+            {
+                ViewBag.Error = "Vui lòng nhập đầy đủ thông tin!";
+                ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
+                return View(model);
+            }
+
             if (!ModelState.IsValid)
             {
+                var loiDauTien = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
+                ViewBag.Error = string.IsNullOrEmpty(loiDauTien)
+                    ? "Dữ liệu không hợp lệ!"
+                    : loiDauTien;
+
+                ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
+                return View(model);
+            }
+
+            if (model.Thu < 2 || model.Thu > 8)
+            {
+                ViewBag.Error = "Thứ không hợp lệ!";
+                ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
+                return View(model);
+            }
+
+            if (model.TietBatDau <= 0 || model.TietKetThuc <= 0 || model.SiSoToiDa <= 0)
+            {
+                ViewBag.Error = "Dữ liệu không hợp lệ!";
+                ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
+                return View(model);
+            }
+
+            if (model.TietBatDau > model.TietKetThuc)
+            {
+                ViewBag.Error = "Tiết bắt đầu phải nhỏ hơn hoặc bằng tiết kết thúc!";
+                ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
+                return View(model);
+            }
+
+            if (model.NgayBatDau > model.NgayKetThuc)
+            {
+                ViewBag.Error = "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!";
                 ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
                 return View(model);
             }
@@ -208,9 +291,27 @@ namespace QuanLySinhVien.Controllers
                     ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
                     return View(new LopHocPhanModel());
                 }
-                catch (Exception ex)
+                catch (SqlException ex)
                 {
-                    ViewBag.Error = "Lỗi: " + ex.Message;
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        ViewBag.Error = "Mã lớp học phần đã tồn tại!";
+                    }
+                    else if (ex.Number == 245 || ex.Number == 8114)
+                    {
+                        ViewBag.Error = "Dữ liệu không hợp lệ!";
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Thêm lớp học phần thất bại, vui lòng kiểm tra lại dữ liệu!";
+                    }
+
+                    ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
+                    return View(model);
+                }
+                catch (Exception)
+                {
+                    ViewBag.Error = "Đã xảy ra lỗi, vui lòng thử lại!";
                     ViewBag.DanhSachLopHocPhan = GetDanhSachLopHocPhan();
                     return View(model);
                 }
