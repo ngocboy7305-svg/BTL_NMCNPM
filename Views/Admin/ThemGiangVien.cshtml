@@ -80,11 +80,9 @@
                         <td>@item.Email</td>
                         <td>@item.SoDienThoai</td>
                         <td>
-                            @using (Html.BeginForm("XoaGiangVien", "Admin", FormMethod.Post, new { onsubmit = "return confirm('Bạn có chắc muốn xóa giảng viên này?');" }))
-                            {
-                                <input type="hidden" name="maGiangVien" value="@item.MaGiangVien" />
-                                <button type="submit" class="btn btn-delete">Xóa</button>
-                            }
+                            <button type="button" class="btn btn-delete">
+                                Xóa
+                            </button>
                         </td>
                     </tr>
                 }
