@@ -1,0 +1,35 @@
+﻿@model List<QuanLySinhVien.Models.DiemViewModel>
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Điểm thi";
+}
+
+<div class="page-title">Điểm thi</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã LHP</th>
+                <th>Môn học</th>
+                <th>Chuyên cần</th>
+                <th>Giữa kỳ</th>
+                <th>Cuối kỳ</th>
+                <th>Tổng kết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaLopHocPhan</td>
+                    <td>@item.TenMonHoc</td>
+                    <td>@item.DiemChuyenCan</td>
+                    <td>@item.DiemGiuaKy</td>
+                    <td>@item.DiemCuoiKy</td>
+                    <td>@item.DiemTongKet</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

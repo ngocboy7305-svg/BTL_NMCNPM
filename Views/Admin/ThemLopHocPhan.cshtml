@@ -1,0 +1,123 @@
+﻿@model QuanLySinhVien.Models.LopHocPhanModel
+@using QuanLySinhVien.Models
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Thêm lớp học phần";
+    var dsLopHocPhan = ViewBag.DanhSachLopHocPhan as List<LopHocPhanModel>;
+}
+
+<div class="page-title">Thêm lớp học phần</div>
+
+<div class="card">
+    @if (ViewBag.Message != null)
+    {
+        <p style="color:green">@ViewBag.Message</p>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <p style="color:red">@ViewBag.Error</p>
+    }
+
+    @using (Html.BeginForm("ThemLopHocPhan", "Admin", FormMethod.Post))
+    {
+        <div class="info-grid">
+            <label>Mã lớp học phần</label>
+            @Html.TextBoxFor(m => m.MaLopHocPhan)
+
+            <label>Mã môn học</label>
+            @Html.TextBoxFor(m => m.MaMonHoc)
+
+            <label>Mã giảng viên</label>
+            @Html.TextBoxFor(m => m.MaGiangVien)
+
+            <label>Học kỳ</label>
+            @Html.TextBoxFor(m => m.HocKy)
+
+            <label>Năm học</label>
+            @Html.TextBoxFor(m => m.NamHoc)
+
+            <label>Phòng học</label>
+            @Html.TextBoxFor(m => m.PhongHoc)
+
+            <label>Thứ</label>
+            @Html.TextBoxFor(m => m.Thu)
+
+            <label>Tiết bắt đầu</label>
+            @Html.TextBoxFor(m => m.TietBatDau)
+
+            <label>Tiết kết thúc</label>
+            @Html.TextBoxFor(m => m.TietKetThuc)
+
+            <label>Ngày bắt đầu</label>
+            @Html.TextBoxFor(m => m.NgayBatDau, "{0:yyyy-MM-dd}", new { type = "date" })
+
+            <label>Ngày kết thúc</label>
+            @Html.TextBoxFor(m => m.NgayKetThuc, "{0:yyyy-MM-dd}", new { type = "date" })
+
+            <label>Sĩ số tối đa</label>
+            @Html.TextBoxFor(m => m.SiSoToiDa)
+        </div>
+
+        <div class="toolbar" style="margin-top:16px;">
+            <button type="submit" class="btn btn-save">Lưu</button>
+            <button type="button" class="btn btn-edit">Sửa</button>
+        </div>
+    }
+</div>
+
+<div class="card">
+    <div class="page-title" style="font-size:18px;">Danh sách lớp học phần</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã LHP</th>
+                <th>Mã môn</th>
+                <th>Mã GV</th>
+                <th>Học kỳ</th>
+                <th>Năm học</th>
+                <th>Phòng</th>
+                <th>Thứ</th>
+                <th>Tiết</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Sĩ số</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dsLopHocPhan != null && dsLopHocPhan.Count > 0)
+            {
+                foreach (var item in dsLopHocPhan)
+                {
+                    <tr>
+                        <td>@item.MaLopHocPhan</td>
+                        <td>@item.MaMonHoc</td>
+                        <td>@item.MaGiangVien</td>
+                        <td>@item.HocKy</td>
+                        <td>@item.NamHoc</td>
+                        <td>@item.PhongHoc</td>
+                        <td>@item.Thu</td>
+                        <td>@item.TietBatDau - @item.TietKetThuc</td>
+                        <td>@item.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                        <td>@item.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                        <td>@item.SiSoToiDa</td>
+                        <td>
+                            @using (Html.BeginForm("XoaLopHocPhan", "Admin", FormMethod.Post,
+                                new { onsubmit = "return confirm('Bạn có chắc muốn xóa không?');" }))
+                            {
+                                @Html.Hidden("maLopHocPhan", item.MaLopHocPhan)
+                                <button type="submit" class="btn btn-delete">Xóa</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="12">Chưa có lớp học phần nào</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

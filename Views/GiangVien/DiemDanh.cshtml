@@ -1,0 +1,76 @@
+﻿@model List<QuanLySinhVien.Models.DiemDanhViewModel>
+@using System.Web.Mvc
+
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Điểm danh";
+    var dsLopHocPhan = ViewBag.DanhSachLopHocPhan as List<SelectListItem>;
+}
+
+<div class="page-title">Điểm danh</div>
+
+<div class="card">
+    @using (Html.BeginForm("DiemDanh", "GiangVien", FormMethod.Get))
+    {
+        <div class="search-box">
+            <select name="maLopHocPhan">
+                <option value="">-- Chọn lớp học phần --</option>
+                @if (dsLopHocPhan != null)
+                {
+                    foreach (var item in dsLopHocPhan)
+                    {
+                        <option value="@item.Value" @(ViewBag.MaLopHocPhan != null && ViewBag.MaLopHocPhan.ToString() == item.Value ? "selected" : "")>
+                            @item.Text
+                        </option>
+                    }
+                }
+            </select>
+
+            <button type="submit" class="btn btn-search">Xem danh sách</button>
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <p style="color:red; margin-bottom:10px;">@ViewBag.Error</p>
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã SV</th>
+                <th>Tên sinh viên</th>
+                <th>Ngày sinh</th>
+                <th>Buổi 1</th>
+                <th>Buổi 2</th>
+                <th>Buổi 3</th>
+                <th>Buổi 4</th>
+                <th>Buổi 5</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaSinhVien</td>
+                        <td>@item.TenSinhVien</td>
+                        <td>@(item.NgaySinh.HasValue ? item.NgaySinh.Value.ToString("dd/MM/yyyy") : "")</td>
+                        <td><input type="checkbox" /></td>
+                        <td><input type="checkbox" /></td>
+                        <td><input type="checkbox" /></td>
+                        <td><input type="checkbox" /></td>
+                        <td><input type="checkbox" /></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8">Chưa có sinh viên trong lớp học phần này</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

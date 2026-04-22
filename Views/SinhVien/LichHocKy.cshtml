@@ -1,0 +1,45 @@
+﻿@model List<QuanLySinhVien.Models.LichHocViewModel>
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Lịch học kỳ";
+}
+
+<div class="page-title">Lịch học kỳ</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã LHP</th>
+                <th>Môn học</th>
+                <th>Giảng viên</th>
+                <th>Học kỳ</th>
+                <th>Năm học</th>
+                <th>Thứ</th>
+                <th>Tiết</th>
+                <th>Phòng</th>
+                <th>Từ ngày</th>
+                <th>Đến ngày</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaLopHocPhan</td>
+                    <td>@item.TenMonHoc</td>
+                    <td>@item.TenGiangVien</td>
+                    <td>@item.HocKy</td>
+                    <td>@item.NamHoc</td>
+                    <td>
+                        @(item.Thu == 8 ? "Chủ nhật" : "Thứ " + item.Thu)
+                    </td>
+                    <td>@item.TietBatDau - @item.TietKetThuc</td>
+                    <td>@item.PhongHoc</td>
+                    <td>@item.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                    <td>@item.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

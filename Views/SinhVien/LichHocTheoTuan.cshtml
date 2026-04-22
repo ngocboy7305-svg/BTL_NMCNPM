@@ -1,0 +1,163 @@
+﻿@model QuanLySinhVien.Models.LichHocTuanViewModel
+@using System
+@using System.Linq
+
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Lịch học theo tuần";
+
+    Func<int, string> tenThu = thu =>
+    {
+        if (thu == 8) return "CHỦ NHẬT";
+        return "THỨ " + thu;
+    };
+
+    Func<DateTime, string> dinhDangNgay = ngay => ngay.ToString("dd/MM/yyyy");
+}
+
+<div class="page-title">XEM LỊCH HỌC THEO TUẦN</div>
+
+<div class="card">
+    @if (Model.DanhSachTuan != null && Model.DanhSachTuan.Any())
+    {
+        using (Html.BeginForm("LichHocTheoTuan", "SinhVien", FormMethod.Get))
+        {
+            <div style="margin-bottom: 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+
+                <label style="font-weight:600;">Năm:</label>
+                <select name="nam" onchange="this.form.submit()" class="form-control" style="width: 120px;">
+                    @for (int i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 2; i++)
+                    {
+                        <option value="@i" @(i == ViewBag.Nam ? "selected" : null)>
+                            @i
+                        </option>
+                    }
+                </select>
+
+                <label style="font-weight:600;">Tuần học:</label>
+                <label style="font-weight:600;">Tuần học:</label>
+                <select name="tuan" onchange="this.form.submit()" class="form-control" style="width: 500px; max-width:100%;">
+                    @foreach (var item in Model.DanhSachTuan)
+                    {
+                        <option value="@item.TuanThu" @(item.TuanThu == Model.TuanSo ? "selected" : null)>
+                            Tuần thứ: @item.TuanThu (Từ ngày @item.TuNgay.ToString("dd/MM/yyyy") đến ngày @item.DenNgay.ToString("dd/MM/yyyy"))
+                        </option>
+                    }
+                </select>
+            </div>
+        }
+
+        <table class="table table-bordered lich-tuan-table">
+            <thead>
+                <tr>
+                    <th style="width:100px;">CA HỌC</th>
+                    @for (int thu = 2; thu <= 8; thu++)
+                    {
+                        <th>
+                            @tenThu(thu)
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var caHocList = new[]
+                    {
+                        new { TenCa = "Sáng", TuTiet = 1, DenTiet = 4 },
+                        new { TenCa = "Chiều", TuTiet = 5, DenTiet = 8 }
+                    };
+                }
+
+                @foreach (var ca in caHocList)
+                {
+                    <tr>
+                        <td style="font-weight:600; vertical-align:middle;">@ca.TenCa</td>
+
+                        @for (int thu = 2; thu <= 8; thu++)
+                        {
+                            var dsMon = Model.LichHocItems
+                                .Where(x => x.Thu == thu
+                                         && x.TietBatDau >= ca.TuTiet
+                                         && x.TietKetThuc <= ca.DenTiet)
+                                .OrderBy(x => x.TietBatDau)
+                                .ToList();
+
+                            <td style="vertical-align: top;">
+                                @if (dsMon.Any())
+                                {
+                                    foreach (var mon in dsMon)
+                                    {
+                                        <div class="mon-hoc-box">
+                                            <div class="ten-mon">@mon.TenMonHoc</div>
+                                            <div>Tiết học: @mon.TietBatDau - @mon.TietKetThuc</div>
+                                            <div>Mã lớp: @mon.MaLopHocPhan</div>
+                                            <div>GV: @mon.GiangVien</div>
+                                            <div>Phòng: @mon.PhongHoc</div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="no-class"> </div>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Chưa có lịch học.</p>
+    }
+</div>
+
+<style>
+    .lich-tuan-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+        .lich-tuan-table th,
+        .lich-tuan-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .lich-tuan-table thead th {
+            background: #2f54eb; /* nền xanh */
+            color: white; /* chữ trắng */
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .lich-tuan-table tbody td {
+            background: #f7f7fb;
+            min-height: 180px;
+        }
+
+    .mon-hoc-box {
+        margin-bottom: 14px;
+        line-height: 1.8;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .ten-mon {
+        font-weight: 700;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .no-class {
+        color: #888;
+        font-style: italic;
+    }
+</style>

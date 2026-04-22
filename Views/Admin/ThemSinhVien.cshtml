@@ -1,0 +1,102 @@
+﻿@model QuanLySinhVien.Models.SinhVienModel
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Thêm sinh viên";
+}
+@using QuanLySinhVien.Models
+@{
+    var dsSinhVien = ViewBag.DanhSachSinhVien as List<SinhVienModel>;
+}
+<div class="page-title">Thêm sinh viên</div>
+
+<div class="card">
+    @if (ViewBag.Message != null)
+    {<p style="color:green">@ViewBag.Message</p>}
+    @if (ViewBag.Error != null)
+    {<p style="color:red">@ViewBag.Error</p>}
+
+    @using (Html.BeginForm("ThemSinhVien", "Admin", FormMethod.Post))
+    {
+        <div class="info-grid">
+            <label>Mã sinh viên</label>
+            @Html.TextBoxFor(m => m.MaSinhVien)
+
+            <label>Họ tên</label>
+            @Html.TextBoxFor(m => m.TenSinhVien)
+
+            <label>Ngày sinh</label>
+            @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { type = "date" })
+
+            <label>Giới tính</label>
+            @Html.DropDownListFor(m => m.GioiTinh,
+                new SelectList(new[] { "Nam", "Nữ" }))
+
+            <label>Lớp hành chính</label>
+            @Html.TextBoxFor(m => m.LopHanhChinh)
+
+            <label>Email</label>
+            @Html.TextBoxFor(m => m.Email)
+
+            <label>Số điện thoại</label>
+            @Html.TextBoxFor(m => m.SoDienThoai)
+
+            <label>Mật khẩu</label>
+            @Html.PasswordFor(m => m.MatKhau)
+        </div>
+
+        <div class="toolbar" style="margin-top:16px;">
+            <button type="submit" class="btn btn-save">Lưu</button>
+            <button type="button" class="btn btn-edit">Sửa</button>
+        </div>
+    }
+    <div class="card">
+        <div class="page-title" style="font-size:18px;">Danh sách sinh viên</div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã SV</th>
+                    <th>Tên sinh viên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Lớp hành chính</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (dsSinhVien != null && dsSinhVien.Count > 0)
+                {
+                    foreach (var item in dsSinhVien)
+                    {
+                        <tr>
+                            <td>@item.MaSinhVien</td>
+                            <td>@item.TenSinhVien</td>
+                            <td>@(item.NgaySinh.HasValue ? item.NgaySinh.Value.ToString("dd/MM/yyyy") : "")</td>
+                            <td>@item.GioiTinh</td>
+                            <td>@item.LopHanhChinh</td>
+                            <td>@item.Email</td>
+                            <td>@item.SoDienThoai</td>
+
+                            <!-- CỘT XÓA -->
+                            <td>
+                                @using (Html.BeginForm("XoaSinhVien", "Admin", FormMethod.Post,
+                                    new { onsubmit = "return confirm('Bạn có chắc muốn xóa không?');" }))
+                                {
+                                    @Html.Hidden("maSinhVien", item.MaSinhVien)
+                                    <button type="submit" class="btn btn-delete">Xóa</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8">Chưa có sinh viên nào</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

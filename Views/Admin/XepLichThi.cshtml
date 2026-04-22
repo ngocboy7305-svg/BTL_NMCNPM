@@ -1,0 +1,124 @@
+﻿@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Xếp lịch thi";
+}
+
+<div class="page-title">Xếp lịch thi cho lớp học phần</div>
+
+<!-- FORM NHẬP -->
+<div class="card">
+    <div class="info-grid">
+
+        <label>Mã lịch thi</label>
+        <input type="text" />
+
+        <label>Lớp học phần</label>
+        <select>
+            <option>-- Chọn lớp học phần --</option>
+            <option>LHP001 - Lập trình C#</option>
+            <option>LHP002 - Cơ sở dữ liệu</option>
+        </select>
+
+        <label>Ngày thi</label>
+        <input type="date" />
+
+        <label>Giờ bắt đầu</label>
+        <input type="time" />
+
+        <label>Giờ kết thúc</label>
+        <input type="time" />
+
+        <label>Phòng thi</label>
+        <input type="text" placeholder="VD: A101" />
+
+        <label>Hình thức thi</label>
+        <select>
+            <option>Trực tiếp</option>
+            <option>Online</option>
+        </select>
+
+        <label>Ghi chú</label>
+        <input type="text" placeholder="Không bắt buộc" />
+
+    </div>
+
+    <div class="toolbar">
+        <button type="button" class="btn btn-save">Lưu</button>
+        <button type="button" class="btn btn-edit">Sửa</button>
+    </div>
+</div>
+
+<!-- DANH SÁCH LỊCH THI -->
+<div class="card">
+    <div class="page-title" style="font-size:18px;">Danh sách lịch thi</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã lịch thi</th>
+                <th>Lớp học phần</th>
+                <th>Môn học</th>
+                <th>Ngày thi</th>
+                <th>Giờ bắt đầu</th>
+                <th>Giờ kết thúc</th>
+                <th>Phòng thi</th>
+                <th>Hình thức</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>LT001</td>
+                <td>LHP001</td>
+                <td>Lập trình C#</td>
+                <td>20/06/2026</td>
+                <td>07:30</td>
+                <td>09:30</td>
+                <td>A101</td>
+                <td>Trực tiếp</td>
+            </tr>
+            <tr>
+                <td>LT002</td>
+                <td>LHP002</td>
+                <td>Cơ sở dữ liệu</td>
+                <td>22/06/2026</td>
+                <td>13:30</td>
+                <td>15:00</td>
+                <td>B202</td>
+                <td>Online</td>
+            </tr>
+        </tbody>
+    </table>
+</div>@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Xếp lịch thi";
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 10px 15px;
+}
+
+.info-grid input,
+.info-grid select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.toolbar {
+    margin-top: 15px;
+}
+
+.btn-save {
+    background: #1890ff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+}
+
+.btn-edit {
+    background: #faad14;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+}

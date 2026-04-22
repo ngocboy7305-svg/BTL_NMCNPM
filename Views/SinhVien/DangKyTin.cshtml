@@ -1,0 +1,60 @@
+﻿@model List<QuanLySinhVien.Models.DangKyHocPhanViewModel>
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Đăng ký học phần";
+}
+
+<div class="page-title">Đăng ký học phần</div>
+
+<div class="card">
+    @if (TempData["Message"] != null)
+    {
+        <p style="color:green">@TempData["Message"]</p>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <p style="color:red">@TempData["Error"]</p>
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã LHP</th>
+                <th>Môn học</th>
+                <th>Giảng viên</th>
+                <th>Học kỳ</th>
+                <th>Năm học</th>
+                <th>Thứ</th>
+                <th>Tiết</th>
+                <th>Phòng</th>
+                <th>Sĩ số còn lại</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaLopHocPhan</td>
+                    <td>@item.TenMonHoc</td>
+                    <td>@item.TenGiangVien</td>
+                    <td>@item.HocKy</td>
+                    <td>@item.NamHoc</td>
+                    <td>@item.Thu</td>
+                    <td>@item.TietBatDau - @item.TietKetThuc</td>
+                    <td>@item.PhongHoc</td>
+                    <td>@item.SiSoConLai</td>
+                    <td>
+                        @using (Html.BeginForm("DangKyHocPhan", "SinhVien", FormMethod.Post))
+                        {
+                            <input type="hidden" name="maLopHocPhan" value="@item.MaLopHocPhan" />
+                            <button type="submit" class="btn btn-add" @(item.SiSoConLai <= 0 ? "disabled" : "")>
+                                @(item.SiSoConLai <= 0 ? "Hết chỗ" : "Đăng ký")
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

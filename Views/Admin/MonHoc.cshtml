@@ -1,0 +1,55 @@
+﻿@model QuanLySinhVien.Models.MonHocModel
+@using QuanLySinhVien.Models
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.Title = "Môn học";
+    var dsMonHoc = ViewBag.DanhSachMonHoc as List<MonHocModel>;
+}
+
+<div class="page-title">Danh sách môn học</div>
+
+<div class="card">
+    @if (ViewBag.Message != null)
+    {
+        <p style="color:green">@ViewBag.Message</p>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <p style="color:red">@ViewBag.Error</p>
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã môn</th>
+                <th>Tên môn học</th>
+                <th>Số tín chỉ</th>
+                <th>Số tiết lý thuyết</th>
+                <th>Số tiết thực hành</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dsMonHoc != null && dsMonHoc.Count > 0)
+            {
+                foreach (var item in dsMonHoc)
+                {
+                    <tr>
+                        <td>@item.MaMonHoc</td>
+                        <td>@item.TenMonHoc</td>
+                        <td>@item.SoTinChi</td>
+                        <td>@item.SoTietLyThuyet</td>
+                        <td>@item.SoTietThucHanh</td>
+                        <td>@(item.TrangThai ? "Hoạt động" : "Ngừng")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6">Chưa có môn học nào</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
