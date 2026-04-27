@@ -166,9 +166,18 @@ namespace QuanLySinhVien.Controllers
 
         [HttpPost]
         public ActionResult LuuDiem(string maSinhVien, string maLopHocPhan,
-            double? diemChuyenCan, double? diemGiuaKy, double? diemCuoiKy)
+    double? diemChuyenCan, double? diemGiuaKy, double? diemCuoiKy)
         {
             SetData();
+
+            // VALIDATE
+            if ((diemChuyenCan.HasValue && (diemChuyenCan < 0 || diemChuyenCan > 10)) ||
+                (diemGiuaKy.HasValue && (diemGiuaKy < 0 || diemGiuaKy > 10)) ||
+                (diemCuoiKy.HasValue && (diemCuoiKy < 0 || diemCuoiKy > 10)))
+            {
+                TempData["Error"] = "Điểm không hợp lệ (phải từ 0 đến 10)";
+                return RedirectToAction("NhapDiem", new { maLopHocPhan = maLopHocPhan });
+            }
 
             using (SqlConnection conn = DbHelper.GetConnection())
             {
